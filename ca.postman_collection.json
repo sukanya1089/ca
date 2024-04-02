@@ -1,0 +1,235 @@
+{
+	"info": {
+		"_postman_id": "4710136d-34ad-4b72-83f1-71bd04623267",
+		"name": "ca",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1097196"
+	},
+	"item": [
+		{
+			"name": "Create Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content type is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"",
+							"pm.test(\"Customer object should exist and have required properties\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData.customer).to.exist;",
+							"  pm.expect(responseData.customer).to.be.an('object');",
+							"  pm.expect(responseData.customer.customerId).to.exist.and.to.be.a('string');",
+							"  pm.expect(responseData.customer.name).to.exist.and.to.be.a('string');",
+							"  pm.expect(responseData.customer.surname).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Accounts array is present in the response\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.have.property('accounts').that.is.an('array');",
+							"});",
+							"",
+							"// Populate customerId",
+							"const responseData = pm.response.json();",
+							"pm.collectionVariables.set(\"customerId\", responseData.customer.customerId);",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"name1\",\n    \"surname\": \"surname1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/customers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields - customerId, name, and surname\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.customer.customerId).to.exist.and.to.be.a('string');",
+							"    pm.expect(responseData.customer.name).to.exist.and.to.be.a('string');",
+							"    pm.expect(responseData.customer.surname).to.exist.and.to.be.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Accounts array is present in the response\", function () {",
+							"    const responseData = pm.response.json();",
+							"    ",
+							"    pm.expect(responseData).to.have.property('accounts').that.is.an('array');",
+							"});",
+							"",
+							"",
+							"// Validate customerId",
+							"pm.test(\"customerId from body should match the customerId from URL\", function () {",
+							"    const responseData = pm.response.json();",
+							"    pm.expect(responseData.customer.customerId).to.eql(pm.collectionVariables.get(\"customerId\"));",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/customers/{{customerId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customers",
+						"{{customerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create current account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response has the required fields - accountId, balance\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.have.property('accountId');",
+							"    pm.expect(responseData).to.have.property('balance');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Balance value is a number represented as string\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.balance.value).to.be.a('string');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Currency is in a valid format\", function () {",
+							"  const responseData = pm.response.json();",
+							"  ",
+							"  pm.expect(responseData).to.be.an('object');",
+							"  pm.expect(responseData.balance.currency).to.be.a('string').and.to.match(/[A-Z]{3}/);",
+							"});",
+							"",
+							"",
+							"pm.test(\"Content-Type header is application/json\", function () {",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+							"});",
+							"",
+							"// Populate accountId",
+							"const responseData = pm.response.json();",
+							"pm.collectionVariables.set(\"accountId\", responseData.accountId);",
+							"",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customerId\": \"{{customerId}}\",\n    \"initialAmount\": {\n        \"value\": \"100\",\n        \"currency\": \"EUR\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/accounts",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "customerId",
+			"value": ""
+		},
+		{
+			"key": "accountId",
+			"value": ""
+		}
+	]
+}
