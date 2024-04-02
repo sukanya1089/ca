@@ -27,6 +27,7 @@ docker run -p 8080:8080 me/ca-app
 ## Tests
  - All services have tests using Mocks.
  - Api layer has integration tests.
+ - Added postman tests for e2e testing
 
 ## Misc
 
@@ -40,7 +41,7 @@ docker run -p 8080:8080 me/ca-app
 ### Tools
 1. Lombok
    - To handle boilerplate code
-   - Prefer builder over multi argument constructor as 2 consecutive fields of same type cause lot of confusion and cause lot of issues. 
+   - Prefer builder to multi argument constructor as 2 consecutive fields of same type cause lot of confusion and cause lot of issues. 
 2. Annotations
    - NonNull/Nullable annotations to make sure IDE/Lint catches issues with null pointers
 3. Money
